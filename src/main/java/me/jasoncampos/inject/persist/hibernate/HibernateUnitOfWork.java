@@ -5,6 +5,8 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.UnitOfWork;
@@ -23,6 +25,7 @@ import com.google.inject.persist.UnitOfWork;
  */
 @Singleton
 public class HibernateUnitOfWork implements Provider<Session>, UnitOfWork {
+	private static final Logger logger = LoggerFactory.getLogger(HibernateUnitOfWork.class);
 
 	private final ThreadLocal<Session> sessions = new ThreadLocal<>();
 	private final HibernatePersistService sessionFactory;
@@ -38,6 +41,8 @@ public class HibernateUnitOfWork implements Provider<Session>, UnitOfWork {
 		// Otherwise, assume the session will be manually managed.
 		if (isWorking()) {
 			return sessions.get();
+		} else {
+			logger.warn("Opening hibernate Session with no current UnitOfWork. This session must be manually closed.");
 		}
 
 		return sessionFactory.get().openSession();
@@ -50,7 +55,9 @@ public class HibernateUnitOfWork implements Provider<Session>, UnitOfWork {
 	@Override
 	public void begin() {
 		if (!isWorking()) {
-			sessions.set(get());
+			final Session session = get();
+			sessions.set(session);
+			logger.debug("UnitOfWork started. session={}", session);
 		}
 	}
 
@@ -67,6 +74,7 @@ public class HibernateUnitOfWork implements Provider<Session>, UnitOfWork {
 				session.close();
 			}
 			sessions.remove();
+			logger.debug("UnitOfWork complete. session={}", session);
 		}
 	}
 }
