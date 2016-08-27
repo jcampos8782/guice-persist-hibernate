@@ -2,7 +2,7 @@ package me.jasoncampos.inject.persist.hibernate;
 
 import java.util.List;
 
-import com.google.inject.Provider;
+import javax.inject.Provider;
 
 /**
  * Provides the list of annotated {@code @Entity} classes to register with

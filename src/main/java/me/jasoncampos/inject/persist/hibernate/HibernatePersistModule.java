@@ -2,6 +2,7 @@ package me.jasoncampos.inject.persist.hibernate;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.hibernate.Session;
@@ -80,6 +81,10 @@ public class HibernatePersistModule extends PersistModule {
 		bind(HibernateUnitOfWork.class).in(Singleton.class);
 		bind(UnitOfWork.class).to(HibernateUnitOfWork.class);
 		bind(Session.class).toProvider(HibernateUnitOfWork.class);
+
+		// Since Session implements EntityManager, bind EntityManager as well in case the user would rather use JPA
+		// classes
+		bind(EntityManager.class).toProvider(HibernateSessionEntityManagerAdapter.class);
 	}
 
 	@Inject
