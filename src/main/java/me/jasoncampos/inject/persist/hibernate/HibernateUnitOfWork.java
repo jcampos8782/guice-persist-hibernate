@@ -5,7 +5,6 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.UnitOfWork;
@@ -26,10 +25,10 @@ import com.google.inject.persist.UnitOfWork;
 public class HibernateUnitOfWork implements Provider<Session>, UnitOfWork {
 
 	private final ThreadLocal<Session> sessions = new ThreadLocal<>();
-	private final Provider<SessionFactory> sessionFactory;
+	private final HibernatePersistService sessionFactory;
 
 	@Inject
-	public HibernateUnitOfWork(final Provider<SessionFactory> sessionFactory) {
+	public HibernateUnitOfWork(final HibernatePersistService sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 
@@ -60,7 +59,7 @@ public class HibernateUnitOfWork implements Provider<Session>, UnitOfWork {
 		Preconditions.checkState(isWorking(), "UnitOfWork.end() invoked with no corresponding UnitOfWork.begin()");
 		final Session session = sessions.get();
 		try {
-			if (session.isOpen()) {
+			if (session.isOpen() && session.isJoinedToTransaction()) {
 				session.flush();
 			}
 		} finally {

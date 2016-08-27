@@ -8,7 +8,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import com.google.inject.PrivateModule;
 import com.google.inject.Provides;
 import com.google.inject.persist.PersistModule;
 import com.google.inject.persist.PersistService;
@@ -21,7 +20,8 @@ import com.google.inject.persist.UnitOfWork;
  * <br />
  * <br />
  * Users of this module *must* either<br />
- * a) Provide {@link HibernateEntityClassProvider} and {@link HibernatePropertyProvider} classes to the constructor<br />
+ * a) Provide {@link HibernateEntityClassProvider} and {@link HibernatePropertyProvider} classes to the
+ * constructor<br />
  * OR<br/>
  * b) Provider bindings for those classes via an installed Guice module
  *
@@ -58,45 +58,39 @@ public class HibernatePersistModule extends PersistModule {
 
 	@Override
 	protected void configurePersistence() {
-		// Avoid leaking out configuration and properties
-		install(new PrivateModule() {
-			@Override
-			protected void configure() {
-				requireBinding(HibernateEntityClassProvider.class);
-				requireBinding(HibernatePropertyProvider.class);
+		requireBinding(HibernateEntityClassProvider.class);
+		requireBinding(HibernatePropertyProvider.class);
 
-				if (entityClassProvider != null) {
-					bind(HibernateEntityClassProvider.class).to(entityClassProvider);
-				}
+		if (entityClassProvider != null) {
+			bind(HibernateEntityClassProvider.class).to(entityClassProvider);
+		}
 
-				if (hibernatePropertyProvider != null) {
-					bind(HibernatePropertyProvider.class).to(hibernatePropertyProvider);
-				}
+		if (hibernatePropertyProvider != null) {
+			bind(HibernatePropertyProvider.class).to(hibernatePropertyProvider);
+		}
 
-				bind(PersistService.class).to(HibernatePersistService.class).in(Singleton.class);
-				bind(UnitOfWork.class).to(HibernateUnitOfWork.class);
+		// Resolve PersistService, Provider<SessionFactory>, and HibernatePersistService
+		// to the same object.
+		bind(HibernatePersistService.class).in(Singleton.class);
+		bind(PersistService.class).to(HibernatePersistService.class);
+		bind(SessionFactory.class).toProvider(HibernatePersistService.class);
 
-				bind(SessionFactory.class).toProvider(HibernatePersistService.class).in(Singleton.class);
-				bind(Session.class).toProvider(HibernateUnitOfWork.class);
+		// Resolve UnitOfWork, Provider<Session>,and HibernateUnitOfWork
+		// to the same object.
+		bind(HibernateUnitOfWork.class).in(Singleton.class);
+		bind(UnitOfWork.class).to(HibernateUnitOfWork.class);
+		bind(Session.class).toProvider(HibernateUnitOfWork.class);
+	}
 
-				expose(PersistService.class);
-				expose(UnitOfWork.class);
-				expose(SessionFactory.class);
-				expose(Session.class);
-			}
-
-			@Inject
-			@Provides
-			private Configuration getHibernateConfiguration(
-					final HibernateEntityClassProvider entityClassProvider,
-					final HibernatePropertyProvider hibernatePropertyProvider) {
-				final Configuration configuration = new Configuration();
-				hibernatePropertyProvider.get().forEach((key, value) -> configuration.setProperty(key, value));
-				entityClassProvider.get().forEach(entityClass -> configuration.addAnnotatedClass(entityClass));
-				return configuration;
-			}
-		});
-
+	@Inject
+	@Provides
+	private Configuration getHibernateConfiguration(
+			final HibernateEntityClassProvider entityClassProvider,
+			final HibernatePropertyProvider hibernatePropertyProvider) {
+		final Configuration configuration = new Configuration();
+		hibernatePropertyProvider.get().forEach((key, value) -> configuration.setProperty(key, value));
+		entityClassProvider.get().forEach(entityClass -> configuration.addAnnotatedClass(entityClass));
+		return configuration;
 	}
 
 	@Override
