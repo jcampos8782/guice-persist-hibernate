@@ -43,9 +43,8 @@ public class HibernateUnitOfWork implements Provider<Session>, UnitOfWork {
 			return sessions.get();
 		} else {
 			logger.warn("Opening hibernate Session with no current UnitOfWork. This session must be manually closed.");
+			return sessionFactory.get().openSession();
 		}
-
-		return sessionFactory.get().openSession();
 	}
 
 	public boolean isWorking() {
@@ -55,7 +54,7 @@ public class HibernateUnitOfWork implements Provider<Session>, UnitOfWork {
 	@Override
 	public void begin() {
 		if (!isWorking()) {
-			final Session session = get();
+			final Session session = sessionFactory.get().openSession();
 			sessions.set(session);
 			logger.debug("UnitOfWork started. session={}", session);
 		}
