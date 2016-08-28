@@ -26,7 +26,7 @@ import com.google.inject.persist.UnitOfWork;
  * OR<br/>
  * b) Provider bindings for those classes via an installed Guice module
  *
- * @author Jason Campos <jcmapos8782@gmail.com>
+ * @author Jason Campos <jcampos8782@gmail.com>
  */
 public class HibernatePersistModule extends PersistModule {
 

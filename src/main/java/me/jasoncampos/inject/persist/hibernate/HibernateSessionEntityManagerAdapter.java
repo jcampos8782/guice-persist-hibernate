@@ -10,7 +10,7 @@ import org.hibernate.Session;
  * Simple adapter which uses an injected {@code Provider<Session>} to return the provided {@code Session} objects as an
  * {@code EntityManager}.
  *
- * @author Jason Campos <jcmapos8782@gmail.com>
+ * @author Jason Campos <jcampos8782@gmail.com>
  */
 public class HibernateSessionEntityManagerAdapter implements Provider<EntityManager> {
 

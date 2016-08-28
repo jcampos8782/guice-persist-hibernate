@@ -16,7 +16,7 @@ import com.google.inject.persist.PersistService;
 /**
  * Hibernate {@link PersistService} implementation which manages a singleton {@code SessionFactory}.
  *
- * @author Jason Campos <jcmapos8782@gmail.com>
+ * @author Jason Campos <jcampos8782@gmail.com>
  */
 @Singleton
 public class HibernatePersistService implements Provider<SessionFactory>, PersistService {

@@ -21,7 +21,7 @@ import com.google.inject.persist.UnitOfWork;
  * session not created during a {@link #begin()} invocation *must* be manually closed. Invoking {@link #get()} and then
  * {@link #end()} will *not* close the session created from {@link #get()}.
  *
- * @author Jason Campos <jcmapos8782@gmail.com>
+ * @author Jason Campos <jcampos8782@gmail.com>
  */
 @Singleton
 public class HibernateUnitOfWork implements Provider<Session>, UnitOfWork {
