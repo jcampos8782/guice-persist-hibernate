@@ -1,7 +1,8 @@
 # Eclipse files
-.settings/*
-.classpath
-.project
+**/.settings/*
+**/.classpath
+**/.project
 
 # Build artifacts
 **/target/*
+/target/
