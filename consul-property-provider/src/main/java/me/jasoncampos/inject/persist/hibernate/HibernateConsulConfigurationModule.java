@@ -2,7 +2,7 @@ package me.jasoncampos.inject.persist.hibernate;
 
 import javax.inject.Inject;
 
-import com.google.inject.PrivateModule;
+import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;
@@ -15,7 +15,7 @@ import com.orbitz.consul.KeyValueClient;
  * @author Jason Campos <jcampos8782@gmail.com>
  * @see {@link HibernatePersistModule}
  */
-public class HibernateConsulConfigurationModule extends PrivateModule {
+public class HibernateConsulConfigurationModule extends AbstractModule {
 
 	private final String keyPath;
 
@@ -29,7 +29,6 @@ public class HibernateConsulConfigurationModule extends PrivateModule {
 
 		bindConstant().annotatedWith(HibernateKeys.class).to(keyPath);
 		bind(HibernatePropertyProvider.class).to(HibernatePropertyProviderConsul.class).asEagerSingleton();
-		expose(HibernatePropertyProvider.class);
 	}
 
 	@Provides
