@@ -5,6 +5,7 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.BootstrapServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
@@ -25,10 +26,12 @@ public class HibernatePersistService implements Provider<SessionFactory>, Persis
 	private volatile SessionFactory sessionFactory;
 	private volatile boolean started;
 	private final Configuration configuration;
+	private final BootstrapServiceRegistry bootstrapServiceRegistry;
 
 	@Inject
-	public HibernatePersistService(final Configuration configuration) {
+	public HibernatePersistService(final BootstrapServiceRegistry bootstrapServiceRegistry, final Configuration configuration) {
 		this.configuration = configuration;
+		this.bootstrapServiceRegistry = bootstrapServiceRegistry;
 	}
 
 	@Override
@@ -42,8 +45,9 @@ public class HibernatePersistService implements Provider<SessionFactory>, Persis
 	@Override
 	public void start() {
 		logger.info("Starting HibernatePersistService");
-		final ServiceRegistry registry = new StandardServiceRegistryBuilder()
-				.applySettings(configuration.getProperties()).build();
+		final ServiceRegistry registry = new StandardServiceRegistryBuilder(bootstrapServiceRegistry)
+				.applySettings(configuration.getProperties())
+				.build();
 
 		this.sessionFactory = configuration.buildSessionFactory(registry);
 		logger.info("HibernatePersistServiceStarted");

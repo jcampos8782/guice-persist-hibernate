@@ -1,5 +1,9 @@
 package me.jasoncampos.inject.persist.hibernate;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
@@ -7,7 +11,10 @@ import javax.persistence.EntityManager;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.BootstrapServiceRegistry;
+import org.hibernate.boot.registry.BootstrapServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.integrator.spi.Integrator;
 
 import com.google.inject.Provides;
 import com.google.inject.persist.PersistModule;
@@ -32,6 +39,7 @@ public class HibernatePersistModule extends PersistModule {
 
 	private final Class<? extends HibernateEntityClassProvider> entityClassProvider;
 	private final Class<? extends HibernatePropertyProvider> hibernatePropertyProvider;
+	private final Set<Integrator> integrators = new HashSet<>();
 
 	/**
 	 * Instantiates module without specifying the {@link #hibernatePropertyProvider} or {@link #entityClassProvider}.
@@ -87,6 +95,21 @@ public class HibernatePersistModule extends PersistModule {
 		bind(EntityManager.class).toProvider(HibernateSessionEntityManagerAdapter.class);
 	}
 
+	public void addIntegrator(final Integrator integrator) {
+		integrators.add(integrator);
+	}
+
+	public void addIntegrators(final Collection<Integrator> integrators) {
+		this.integrators.addAll(integrators);
+	}
+
+	@Override
+	protected MethodInterceptor getTransactionInterceptor() {
+		final MethodInterceptor txInterceptor = new HibernateTransactionInterceptor();
+		requestInjection(txInterceptor);
+		return txInterceptor;
+	}
+
 	@Inject
 	@Provides
 	private Configuration getHibernateConfiguration(
@@ -98,10 +121,15 @@ public class HibernatePersistModule extends PersistModule {
 		return configuration;
 	}
 
-	@Override
-	protected MethodInterceptor getTransactionInterceptor() {
-		final MethodInterceptor txInterceptor = new HibernateTransactionInterceptor();
-		requestInjection(txInterceptor);
-		return txInterceptor;
+	@Provides
+	@Singleton
+	private BootstrapServiceRegistry getBootstrapServiceRegistry() {
+		final BootstrapServiceRegistryBuilder builder = new BootstrapServiceRegistryBuilder();
+
+		for (final Integrator integrator : integrators) {
+			builder.applyIntegrator(integrator);
+		}
+
+		return builder.build();
 	}
 }
