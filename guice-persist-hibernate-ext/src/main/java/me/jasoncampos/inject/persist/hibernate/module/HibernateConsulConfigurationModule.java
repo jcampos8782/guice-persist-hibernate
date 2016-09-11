@@ -1,4 +1,4 @@
-package me.jasoncampos.inject.persist.hibernate;
+package me.jasoncampos.inject.persist.hibernate.module;
 
 import javax.inject.Inject;
 
@@ -6,6 +6,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;
+
+import me.jasoncampos.inject.persist.hibernate.HibernatePersistModule;
+import me.jasoncampos.inject.persist.hibernate.HibernatePropertyProvider;
+import me.jasoncampos.inject.persist.hibernate.HibernatePropertyProviderConsul;
 
 /**
  * Module used to bootstrap hibernate using configuration properties provided by Consul. The {@link #keyPath} must

@@ -14,6 +14,8 @@ import com.google.common.base.Optional;
 import com.orbitz.consul.KeyValueClient;
 import com.orbitz.consul.model.kv.Value;
 
+import me.jasoncampos.inject.persist.hibernate.module.HibernateKeys;
+
 /**
  * Loads hibernate configuration properties from consul. The {@link #keyPath} must
  * specify the full path to the consul folder containing hibernate configuration properties. For example,

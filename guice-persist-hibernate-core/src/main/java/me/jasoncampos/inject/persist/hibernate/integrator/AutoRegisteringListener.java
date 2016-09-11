@@ -19,7 +19,7 @@ public interface AutoRegisteringListener {
 	 * Listeners can either replace the existing event listeners for a particular {@code EventType} or be
 	 * prepended/appended (or both) to the listener chain for the specified {@code EventType}.
 	 */
-	public enum EventRegistration {
+	public enum RegistrationType {
 		REPLACE, PREPEND, APPEND
 	};
 
@@ -32,5 +32,5 @@ public interface AutoRegisteringListener {
 	 * @return A set of instructions on how to register this listener. Note that if both {@code REPLACE} and
 	 *         {@code PREPEND/APPEND} are both specified, behavior is non-deterministic.
 	 */
-	ImmutableSet<EventRegistration> getEventRegistrations();
+	ImmutableSet<RegistrationType> getEventRegistrations();
 }

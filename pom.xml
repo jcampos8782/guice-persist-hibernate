@@ -10,12 +10,14 @@
     <version.guava>19.0</version.guava>
     <version.guice>4.0</version.guice>
     <version.hibernate>5.2.2.Final</version.hibernate>
+    <version.junit>4.12</version.junit>
+    <version.mockito>1.10.19</version.mockito>
+    <version.slf4j-api>1.7.21</version.slf4j-api>
   </properties>
   
   <modules>
     <module>guice-persist-hibernate-core</module>
-    <module>consul-property-provider</module>
-    <module>annotated-entity-provider</module>
+    <module>guice-persist-hibernate-ext</module>
   </modules>
   
   <dependencyManagement>
@@ -53,22 +55,23 @@
 		<dependency>
 		    <groupId>org.slf4j</groupId>
 		    <artifactId>slf4j-api</artifactId>
-		    <version>1.7.21</version>
+		    <version>${version.slf4j-api}</version>
 		</dependency>
 		<dependency>
 		    <groupId>junit</groupId>
 		    <artifactId>junit</artifactId>
-		    <version>4.12</version>
+		    <version>${version.junit}</version>
 		    <scope>test</scope>
 		</dependency>
 		<dependency>
 		    <groupId>org.mockito</groupId>
 		    <artifactId>mockito-all</artifactId>
-		    <version>1.10.19</version>
+		    <version>${version.mockito}</version>
 		    <scope>test</scope>
 		</dependency>
 	  </dependencies>
   </dependencyManagement>
+  
   <build>
     <plugins>
       <plugin>

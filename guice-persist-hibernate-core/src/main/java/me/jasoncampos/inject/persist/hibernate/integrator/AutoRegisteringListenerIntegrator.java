@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableSet;
 
-import me.jasoncampos.inject.persist.hibernate.integrator.AutoRegisteringListener.EventRegistration;
+import me.jasoncampos.inject.persist.hibernate.integrator.AutoRegisteringListener.RegistrationType;
 
 /**
  * Hibernate {@link Integrator} which dynamically binds Listeners with the {@code EventType EventTypes} to which they
@@ -48,7 +48,7 @@ public class AutoRegisteringListenerIntegrator implements Integrator {
 	}
 
 	private <T> void doRegister(final EventListenerRegistry registry, final EventType<T> type, final AutoRegisteringListener listener) {
-		for (final EventRegistration registrationType : listener.getEventRegistrations()) {
+		for (final RegistrationType registrationType : listener.getEventRegistrations()) {
 			switch (registrationType) {
 			case REPLACE:
 				replaceListener(registry, type, listener);
