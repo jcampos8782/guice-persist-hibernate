@@ -20,6 +20,12 @@
     <module>guice-persist-hibernate-ext</module>
   </modules>
   
+  <scm>
+     <url>https://github.com/jcampos8782/guice-persist-hibernate</url>
+     <connection>scm:git:git://github.com/jcampos8782/guice-persist-hibernate.git</connection>
+     <developerConnection>scm:git:git@github.com:jcampos8782/guice-persist-hibernate.git</developerConnection>
+  </scm>
+    
   <dependencyManagement>
 	  <dependencies>
 		<dependency>
