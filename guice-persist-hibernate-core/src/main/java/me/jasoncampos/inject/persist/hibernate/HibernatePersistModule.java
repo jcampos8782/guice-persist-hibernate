@@ -1,8 +1,7 @@
 package me.jasoncampos.inject.persist.hibernate;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -16,7 +15,10 @@ import org.hibernate.boot.registry.BootstrapServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.integrator.spi.Integrator;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Provides;
+import com.google.inject.TypeLiteral;
+import com.google.inject.multibindings.OptionalBinder;
 import com.google.inject.persist.PersistModule;
 import com.google.inject.persist.PersistService;
 import com.google.inject.persist.UnitOfWork;
@@ -39,7 +41,6 @@ public class HibernatePersistModule extends PersistModule {
 
 	private final Class<? extends HibernateEntityClassProvider> entityClassProvider;
 	private final Class<? extends HibernatePropertyProvider> hibernatePropertyProvider;
-	private final Set<Integrator> integrators = new HashSet<>();
 
 	/**
 	 * Instantiates module without specifying the {@link #hibernatePropertyProvider} or {@link #entityClassProvider}.
@@ -90,17 +91,19 @@ public class HibernatePersistModule extends PersistModule {
 		bind(UnitOfWork.class).to(HibernateUnitOfWork.class);
 		bind(Session.class).toProvider(HibernateUnitOfWork.class);
 
+		// Default to an empty set of integrators
+		// @formatter:off
+		final List<Integrator> integrators = Collections.emptyList();
+		OptionalBinder.newOptionalBinder(binder(), new TypeLiteral<ImmutableSet<? extends Integrator>>(){})
+			.setDefault()
+			.toInstance(ImmutableSet.copyOf(integrators));
+
+
+
+		// @formatter:on
 		// Since Session implements EntityManager, bind EntityManager as well in case the user would rather use JPA
 		// classes
 		bind(EntityManager.class).toProvider(HibernateSessionEntityManagerAdapter.class);
-	}
-
-	public void addIntegrator(final Integrator integrator) {
-		integrators.add(integrator);
-	}
-
-	public void addIntegrators(final Collection<Integrator> integrators) {
-		this.integrators.addAll(integrators);
 	}
 
 	@Override
@@ -123,7 +126,8 @@ public class HibernatePersistModule extends PersistModule {
 
 	@Provides
 	@Singleton
-	private BootstrapServiceRegistry getBootstrapServiceRegistry() {
+	@Inject
+	private BootstrapServiceRegistry getBootstrapServiceRegistry(final ImmutableSet<? extends Integrator> integrators) {
 		final BootstrapServiceRegistryBuilder builder = new BootstrapServiceRegistryBuilder();
 
 		for (final Integrator integrator : integrators) {

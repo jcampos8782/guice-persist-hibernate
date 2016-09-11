@@ -1,5 +1,7 @@
 package me.jasoncampos.inject.persist.hibernate.integrator;
 
+import javax.inject.Inject;
+
 import org.hibernate.boot.Metadata;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
@@ -24,6 +26,7 @@ public class AutoRegisteringListenerIntegrator implements Integrator {
 	private static final Logger logger = LoggerFactory.getLogger(AutoRegisteringListenerIntegrator.class);
 	private final ImmutableSet<? extends AutoRegisteringListener> listeners;
 
+	@Inject
 	public AutoRegisteringListenerIntegrator(final ImmutableSet<? extends AutoRegisteringListener> listeners) {
 		this.listeners = listeners;
 	}
