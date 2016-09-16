@@ -26,6 +26,19 @@
      <developerConnection>scm:git:git@github.com:jcampos8782/guice-persist-hibernate.git</developerConnection>
   </scm>
     
+  <distributionManagement>
+    <repository>
+         <id>nexus</id>
+         <name>Nexus</name>
+         <url>https://nexus.jasoncampos.me/content/repositories/releases/</url>
+    </repository>
+    <snapshotRepository>
+         <id>nexus</id>
+         <name>Nexus snapshots</name>
+         <url>https://nexus.jasoncampos.me/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <dependencyManagement>
 	  <dependencies>
 		<dependency>
@@ -96,18 +109,4 @@
       </plugin>
     </plugins>
   </build>
-  
-  
-  <distributionManagement>
-    <repository>
-         <id>nexus</id>
-         <name>Nexus</name>
-         <url>http://nexus.jasoncampos.me/content/repositories/releases/</url>
-    </repository>
-    <snapshotRepository>
-         <id>nexus</id>
-         <name>Nexus snapshots</name>
-         <url>http://nexus.jasoncampos.me/content/repositories/snapshots/</url>
-    </snapshotRepository>
-</distributionManagement>
 </project>
