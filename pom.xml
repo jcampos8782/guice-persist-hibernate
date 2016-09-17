@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>me.jasoncampos</groupId>
   <artifactId>guice-persist-hibernate</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <properties>
@@ -24,8 +24,22 @@
      <url>https://github.com/jcampos8782/guice-persist-hibernate</url>
      <connection>scm:git:git://github.com/jcampos8782/guice-persist-hibernate.git</connection>
      <developerConnection>scm:git:git@github.com:jcampos8782/guice-persist-hibernate.git</developerConnection>
+    <tag>HEAD</tag>
   </scm>
     
+  <distributionManagement>
+    <repository>
+         <id>nexus</id>
+         <name>Nexus</name>
+         <url>https://nexus.jasoncampos.me/content/repositories/releases/</url>
+    </repository>
+    <snapshotRepository>
+         <id>nexus</id>
+         <name>Nexus snapshots</name>
+         <url>https://nexus.jasoncampos.me/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <dependencyManagement>
 	  <dependencies>
 		<dependency>
@@ -93,7 +107,26 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
         <version>2.5.3</version>
+        <configuration>
+            <arguments>-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true</arguments>
+        </configuration>
       </plugin>
+      <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-javadoc-plugin</artifactId>
+	    <version>2.9</version>
+	    <executions>
+	        <execution>
+	            <id>attach-javadocs</id>
+	            <goals>
+	                <goal>jar</goal>
+	            </goals>
+	            <configuration>
+	                <additionalparam>-Xdoclint:none</additionalparam>
+	            </configuration>
+	        </execution>
+	    </executions>
+	   </plugin>
     </plugins>
   </build>
 </project>
